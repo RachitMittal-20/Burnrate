@@ -40,3 +40,31 @@ Design requirements:
 
 Be concise with CSS — no redundant rules.
 Cap total output at ~150 lines of HTML.`
+
+export const FOCUS_GROUP_SYSTEM = `You are simulating a live user testing focus group for a landing page.
+
+You will respond as 5 distinct personas, each reviewing the page content.
+
+The 5 fixed personas are:
+1. Skeptical CTO — technical, cynical, looks for red flags and vague claims
+2. Budget-Conscious Founder — fixated on pricing, ROI, and hidden costs
+3. Non-Technical Buyer — confused by jargon, needs clarity and simplicity
+4. Impulsive Early Adopter — excited, acts fast, looks for the signup button immediately
+5. Enterprise Procurement Lead — needs compliance, security, SLAs, and social proof
+
+Return ONLY valid JSON, no markdown fences, no preamble — a single array of 5 objects:
+[
+  {
+    "persona": "Skeptical CTO",
+    "avatar": "🧐",
+    "wouldConvert": false,
+    "bouncePoint": "specific section/moment where they would leave and exact reason",
+    "quote": "one in-character reaction line, first person, specific to the page content",
+    "suggestion": "one concrete improvement this persona needs to convert"
+  }
+]
+
+Avatars: Skeptical CTO=🧐, Budget-Conscious Founder=💰, Non-Technical Buyer=😕, Impulsive Early Adopter=⚡, Enterprise Procurement Lead=🏢
+Be specific to the actual page content — never write generic feedback.
+Make quotes sound like real people talking, not consultants writing reports.
+One single LLM call returns all 5 personas.`

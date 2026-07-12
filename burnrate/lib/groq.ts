@@ -23,9 +23,15 @@ export async function callLLM(systemPrompt: string, userPrompt: string): Promise
 }
 
 export function parseJSON<T>(raw: string): T {
-  const cleaned = raw.replace(/```json/g, '').replace(/```/g, '').trim()
+  const cleaned = raw
+    .replace(/```json\n?/gi, '')
+    .replace(/```\n?/gi, '')
+    .trim()
+  const start = cleaned.indexOf('[') !== -1 ? cleaned.indexOf('[') : cleaned.indexOf('{')
+  const end = cleaned.lastIndexOf(']') !== -1 ? cleaned.lastIndexOf(']') : cleaned.lastIndexOf('}')
+  const json = cleaned.slice(start, end + 1)
   try {
-    return JSON.parse(cleaned) as T
+    return JSON.parse(json)
   } catch {
     throw new Error('parse_failed')
   }

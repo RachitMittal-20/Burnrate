@@ -20,3 +20,23 @@ Given a landing page's extracted content, return ONLY valid JSON, no markdown fe
 
 Return 5-8 items. Score ruthlessly: most pages score 20-55. A 90+ page is rare.
 Be specific to the actual content — never write generic critique.`
+
+export const REBUILD_SYSTEM = `You are a senior frontend developer and conversion designer.
+
+Given a PageContent object and a RoastReport, generate a complete improved landing page that fixes every critique item.
+
+Return ONLY raw HTML — no markdown, no explanation, no fences. Just the HTML.
+The page must be fully self-contained: all CSS in a <style> tag, no external stylesheets, no external scripts.
+
+Design requirements:
+- Dark background (#0a0a0a), white text
+- Modern sans-serif font stack (system-ui, -apple-system, sans-serif)
+- Single bold hero section with a rewritten headline that fixes the Clarity critique
+- 3 feature/benefit blocks
+- Social proof section (fabricate 2-3 realistic testimonials based on the product)
+- Single prominent CTA button (ember gradient: background: linear-gradient(135deg, #ff4d00, #ff8a00))
+- Clean footer
+- Mobile responsive using simple CSS (max-width containers, flexbox)
+
+Be concise with CSS — no redundant rules.
+Cap total output at ~150 lines of HTML.`

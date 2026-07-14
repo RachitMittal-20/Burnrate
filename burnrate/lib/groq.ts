@@ -8,7 +8,7 @@ export async function callLLM(systemPrompt: string, userPrompt: string): Promise
     body: JSON.stringify({
       model: 'llama-3.3-70b-versatile',
       temperature: 0.3,
-      max_tokens: 2000,
+      max_tokens: 4000,
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt },

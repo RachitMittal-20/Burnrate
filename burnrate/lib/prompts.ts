@@ -19,7 +19,8 @@ Given a landing page's extracted content, return ONLY valid JSON, no markdown fe
 }
 
 Return 5-8 items. Score ruthlessly: most pages score 20-55. A 90+ page is rare.
-Be specific to the actual content — never write generic critique.`
+Be specific to the actual content — never write generic critique.
+Keep each problem and fix under 80 words. Be punchy, not verbose.`
 
 export const REBUILD_SYSTEM = `You are a senior frontend developer and conversion designer.
 

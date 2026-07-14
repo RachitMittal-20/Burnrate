@@ -1,14 +1,19 @@
 import { callLLM, parseJSON } from '@/lib/groq'
 import { ROAST_SYSTEM } from '@/lib/prompts'
-import type { PageContent, RoastReport } from '@/types'
+import type { PageContent, RoastItem, RoastReport } from '@/types'
 
 export async function POST(request: Request) {
   const { pageContent }: { pageContent: PageContent } = await request.json()
 
   try {
     const raw = await callLLM(ROAST_SYSTEM, JSON.stringify(pageContent))
-    const report = parseJSON<RoastReport>(raw)
-    return Response.json(report)
+    const parsed = parseJSON<RoastReport | RoastItem[]>(raw)
+
+    const result: RoastReport = Array.isArray(parsed)
+      ? { overallScore: 50, verdict: "Here's what we found...", items: parsed }
+      : parsed
+
+    return Response.json(result)
   } catch (err) {
     if (err instanceof Error && err.message === 'llm_failed') {
       return Response.json({ error: 'AI service unavailable' }, { status: 502 })

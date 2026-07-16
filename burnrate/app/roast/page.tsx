@@ -65,6 +65,7 @@ function RoastPageContent() {
   const [error, setError] = useState(false)
   const [isRebuilding, setIsRebuilding] = useState(false)
   const [rebuiltHtml, setRebuiltHtml] = useState<string | null>(null)
+  const [rebuildError, setRebuildError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!url) {
@@ -101,12 +102,18 @@ function RoastPageContent() {
   async function handleRebuild() {
     if (!pageContent || !roastReport) return
     setIsRebuilding(true)
+    setRebuildError(null)
     try {
       const res = await fetch('/api/rebuild', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ pageContent, roastReport }),
       })
+      if (res.status === 422) {
+        const { error } = await res.json()
+        setRebuildError(error)
+        return
+      }
       const html = await res.text()
       setRebuiltHtml(html)
     } finally {
@@ -174,6 +181,12 @@ function RoastPageContent() {
                 'Rebuild it 🔥'
               )}
             </motion.button>
+
+            {rebuildError && (
+              <div className="mt-4 max-w-md rounded-xl border border-orange-500/30 bg-orange-500/10 p-4 text-sm text-orange-200">
+                {rebuildError}
+              </div>
+            )}
           </div>
         )}
 

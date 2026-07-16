@@ -32,18 +32,16 @@ export function CompareView({ pageContent, rebuiltHtml }: Props) {
         <div>
           <p className="mb-2 text-sm font-semibold text-red-400">Before 😬</p>
           <div className="h-125 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900">
-            <div className="h-full overflow-auto bg-white p-4 text-sm text-gray-700">
-              <h1 className="text-lg font-bold">{pageContent.title}</h1>
-              <p className="mt-1 text-gray-500">{pageContent.metaDescription}</p>
-              {pageContent.headings.map((h, i) => (
-                <h3 key={i} className="mt-3 font-semibold">{h}</h3>
-              ))}
-              <p className="mt-3">{pageContent.bodyCopy}</p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {pageContent.ctaTexts.map((cta, i) => (
-                  <button key={i} className="rounded bg-blue-500 px-3 py-1 text-white">{cta}</button>
-                ))}
-              </div>
+            <div className="h-full w-full overflow-hidden">
+              <img
+                src={`https://api.microlink.io/?url=${encodeURIComponent(pageContent.url)}&screenshot=true&meta=false&embed=screenshot.url`}
+                alt="Original page screenshot"
+                className="h-auto w-full object-top"
+                style={{ minHeight: '100%', objectFit: 'cover', objectPosition: 'top' }}
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none'
+                }}
+              />
             </div>
           </div>
         </div>

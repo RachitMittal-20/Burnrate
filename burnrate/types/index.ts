@@ -6,6 +6,9 @@ export type PageContent = {
   ctaTexts: string[]
   bodyCopy: string
   ogImage: string | null
+  layoutDensity: 'minimal' | 'moderate' | 'dense'
+  hasImages: boolean
+  sectionCount: number
 }
 
 export type RoastItem = {

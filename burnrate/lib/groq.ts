@@ -8,7 +8,7 @@ export async function callLLM(systemPrompt: string, userPrompt: string): Promise
     body: JSON.stringify({
       model: 'llama-3.3-70b-versatile',
       temperature: 0.3,
-      max_tokens: 4000,
+      max_tokens: 6000,
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt },
@@ -16,7 +16,12 @@ export async function callLLM(systemPrompt: string, userPrompt: string): Promise
     }),
   })
 
-  if (!res.ok) throw new Error('llm_failed')
+  if (!res.ok) {
+    const errorBody = await res.text()
+    console.error('GROQ API ERROR:', res.status, errorBody)
+    if (res.status === 429) throw new Error('rate_limited')
+    throw new Error('llm_failed')
+  }
 
   const data = await res.json()
   return data.choices[0].message.content as string

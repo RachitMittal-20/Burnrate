@@ -7,6 +7,7 @@ import { Navbar } from '@/components/navbar'
 import { ScoreRing } from '@/components/score-ring'
 import { RoastCard } from '@/components/roast-card'
 import { CompareView } from '@/components/compare-view'
+import { RefineBox } from '@/components/refine-box'
 import FireflyBg from '@/components/firefly-bg'
 import type { PageContent, RoastReport } from '@/types'
 
@@ -66,6 +67,7 @@ function RoastPageContent() {
   const [isRebuilding, setIsRebuilding] = useState(false)
   const [rebuiltHtml, setRebuiltHtml] = useState<string | null>(null)
   const [rebuildError, setRebuildError] = useState<string | null>(null)
+  const [isRefining, setIsRefining] = useState(false)
 
   useEffect(() => {
     if (!url) {
@@ -109,7 +111,7 @@ function RoastPageContent() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ pageContent, roastReport }),
       })
-      if (res.status === 422) {
+      if (res.status === 422 || res.status === 429) {
         const { error } = await res.json()
         setRebuildError(error)
         return
@@ -118,6 +120,24 @@ function RoastPageContent() {
       setRebuiltHtml(html)
     } finally {
       setIsRebuilding(false)
+    }
+  }
+
+  async function handleRefine(instruction: string) {
+    setIsRefining(true)
+    try {
+      const res = await fetch('/api/refine', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ currentHtml: rebuiltHtml, instruction }),
+      })
+      if (!res.ok) throw new Error('refine_failed')
+      const newHtml = await res.text()
+      setRebuiltHtml(newHtml)
+    } catch {
+      // silently keep old html, could add a toast later
+    } finally {
+      setIsRefining(false)
     }
   }
 
@@ -191,6 +211,7 @@ function RoastPageContent() {
         )}
 
         {rebuiltHtml && <CompareView pageContent={pageContent} rebuiltHtml={rebuiltHtml} />}
+        {rebuiltHtml && <RefineBox onRefine={handleRefine} isLoading={isRefining} />}
       </div>
     </div>
   )

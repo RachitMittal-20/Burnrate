@@ -43,6 +43,14 @@ export async function extractPageContent(url: string): Promise<PageContent> {
   )].slice(0, 8)
   const bodyCopy = $('body').text().replace(/\s+/g, ' ').trim().slice(0, 2000)
 
+  const sectionCount = Math.min(
+    20,
+    $('section, [class*="section"], body > div').length || 1
+  )
+  const hasImages = $('img').length > 3
+  const density = bodyCopy.length / sectionCount
+  const layoutDensity = density > 800 ? 'dense' : density > 300 ? 'moderate' : 'minimal'
+
   return {
     url: parsed.toString(),
     title: $('title').text().trim(),
@@ -51,5 +59,8 @@ export async function extractPageContent(url: string): Promise<PageContent> {
     ctaTexts,
     bodyCopy,
     ogImage: $('meta[property="og:image"]').attr('content')?.trim() ?? null,
+    layoutDensity,
+    hasImages,
+    sectionCount,
   }
 }

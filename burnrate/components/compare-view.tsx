@@ -23,6 +23,7 @@ export function CompareView({ pageContent, rebuiltHtml }: Props) {
 
   function handleTestFocusGroup() {
     sessionStorage.setItem('rebuiltHtml', rebuiltHtml)
+    sessionStorage.setItem('originalUrl', pageContent.url)
     router.push('/focus-group')
   }
 
